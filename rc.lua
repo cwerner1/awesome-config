@@ -77,7 +77,7 @@ layouts =
 tags = {}
 for s = 1, screen.count() do
     -- Each screen has its own tag table.
-    tags[s] = awful.tag({ 1, 2, 3, 4, 5, 6, 7, 8, 9 }, s, layouts[1])
+    tags[s] = awful.tag({ 1, 2, "_Prog", 4, 5, 6, "_VBox", "_Comm", "_Dl" }, s, layouts[1])
 end
 -- }}}
 
@@ -342,6 +342,17 @@ awful.rules.rules = {
       properties = { floating = true } },
     { rule = { class = "gimp" },
       properties = { floating = true } },
+	{ rule = { class = "Transmission-gtk" },
+	properties = { tag = tags[1][9] }},
+	{ rule = { class = "Thunderbird" },
+	properties = { tag = tags[1][8] }},
+	{ rule = { class = "Skype" },
+        properties = { tag = tags[1][8] }},
+	{ rule = { class = "VirtualBox" },
+        properties = { tag = tags[1][7] }},
+	{ rule = { class = "VirtualBox" },
+        properties = { tag = tags[1][7] }},
+
     -- Set Firefox to always map on tags number 2 of screen 1.
     -- { rule = { class = "Firefox" },
     --   properties = { tag = tags[1][2] } },
@@ -383,7 +394,10 @@ client.add_signal("unfocus", function(c) c.border_color = beautiful.border_norma
 do
   local cmds = 
   { 
-    "skype"
+    "run-once skype",
+	"run-once hamster-indicator",
+	"run-once transmission-gtk",
+	"run-once thunderbird"
   }
 
   for _,i in pairs(cmds) do
