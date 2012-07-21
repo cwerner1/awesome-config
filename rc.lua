@@ -44,7 +44,7 @@ beautiful.init("/usr/share/awesome/themes/default/theme.lua")
 
 -- This is used later as the default terminal and editor to run.
 terminal = "x-terminal-emulator"
-editor = os.getenv("EDITOR") or "editor"
+editor = os.getenv("EDITOR") or "vim"
 editor_cmd = terminal .. " -e " .. editor
 
 -- Default modkey.
@@ -53,6 +53,10 @@ editor_cmd = terminal .. " -e " .. editor
 -- I suggest you to remap Mod4 to another key using xmodmap or other tools.
 -- However, you can use another modifier like Mod1, but it may interact with others.
 modkey = "Mod4"
+
+---wallpaper_app = "feh" -- if you want to check for app before trying
+--wallpaper_dir = os.getenv("HOME") .. "/Pictures/Wallpaper" -- wallpaper dir
+--local wallpaper_cmd = "find " .. wallpaper_dir .. " -type f -name '*.jpg'  -print0 | shuf -n1 -z | xargs -0 feh --bg-scale"
 
 -- Table of layouts to cover with awful.layout.inc, order matters.
 layouts =
@@ -77,9 +81,11 @@ layouts =
 tags = {}
 for s = 1, screen.count() do
     -- Each screen has its own tag table.
-    tags[s] = awful.tag({ 1, 2, "_Prog", 4, 5, 6, "_VBox", "_Comm", "_Dl" }, s, layouts[1])
+    tags[s] = awful.tag({ 1, "_File", "_Prog", "_Web", 5, "_Mus", "_VBox", "_Comm", "_Dl" }, s, layouts[1])
 end
 -- }}}
+
+
 
 -- {{{ Menu
 -- Create a laucher widget and a main menu
@@ -99,6 +105,8 @@ mymainmenu = awful.menu({ items = { { "awesome", myawesomemenu, beautiful.awesom
 mylauncher = awful.widget.launcher({ image = image(beautiful.awesome_icon),
                                      menu = mymainmenu })
 -- }}}
+
+
 
 -- {{{ Wibox
 -- Create a textclock widget
@@ -132,7 +140,13 @@ mytasklist.buttons = awful.util.table.join(
                                                   -- This will also un-minimize
                                                   -- the client, if needed
                                                   client.focus = c
-                                                  c:raise()
+                        -- {{{ Reusable separator
+separator = widget({ type = "imagebox" })
+separator.image = image(beautiful.widget_sep)
+
+spacer = widget({ type = "textbox" })
+spacer.width = 3
+-- }}}                          c:raise()
                                               end
                                           end),
                      awful.button({ }, 3, function ()
@@ -255,7 +269,10 @@ globalkeys = awful.util.table.join(
                   mypromptbox[mouse.screen].widget,
                   awful.util.eval, nil,
                   awful.util.getdir("cache") .. "/history_eval")
-              end)
+              end),
+	awful.key({ }, "XF86AudioRaiseVolume",    function () awful.util.spawn("amixer set PCM 2+") end),
+awful.key({ }, "XF86AudioLowerVolume",    function () awful.util.spawn("amixer set PCM 2-") end)
+
 )
 
 clientkeys = awful.util.table.join(
@@ -342,8 +359,11 @@ awful.rules.rules = {
       properties = { floating = true } },
     { rule = { class = "gimp" },
       properties = { floating = true } },
-	{ rule = { class = "Transmission-gtk" },
-	properties = { tag = tags[1][9] }},
+    { rule = { class = "Nautilus" },
+        properties = { tag = tags[1][2] }},
+          { rule = { class = "Java" },
+        properties = { tag = tags[1][3] }},
+	
 	{ rule = { class = "Thunderbird" },
 	properties = { tag = tags[1][8] }},
 	{ rule = { class = "Skype" },
@@ -352,8 +372,20 @@ awful.rules.rules = {
         properties = { tag = tags[1][7] }},
 	{ rule = { class = "VirtualBox" },
         properties = { tag = tags[1][7] }},
+	{ rule = { class = "Amarok" },
+        properties = { tag = tags[1][6] }},
+ 	{ rule = { class = "Chromium-browser" },
+        properties = { tag = tags[1][4] }},
 
-    -- Set Firefox to always map on tags number 2 of screen 1.
+
+        { rule = { class = "Transmission-gtk" },
+        properties = { tag = tags[1][9] }},
+        { rule = { class = "Transmission-gtk" },
+        properties = { tag = tags[1][9] }},
+        { rule = { class = "Calibre" },
+        properties = { tag = tags[1][9] }},
+
+   -- Set Firefox to always map on tags number 2 of screen 1.
     -- { rule = { class = "Firefox" },
     --   properties = { tag = tags[1][2] } },
 }
@@ -390,18 +422,32 @@ client.add_signal("focus", function(c) c.border_color = beautiful.border_focus e
 client.add_signal("unfocus", function(c) c.border_color = beautiful.border_normal end)
 -- }}}
 
+
+-- {{{ Autostart
 -- autostart
 do
   local cmds = 
   { 
-    "run-once skype",
+    	"run-once skype",
 	"run-once hamster-indicator",
 	"run-once transmission-gtk",
-	"run-once thunderbird"
+	
+	"run-once nautilus",
+	"run-once bluetooth-applet",
+	"run-once blueproximity",
+	"run-once thunderbird",
+	"run-once nm-applet",
+	"run-once virtualbox",
+	"run-once amarok",
+	"run-once chromium-browser",
+	"run-once netbeans",
+	"run-once calibre"
   }
 
   for _,i in pairs(cmds) do
     awful.util.spawn(i)
   end
 end
+-- }}} 
+
 
