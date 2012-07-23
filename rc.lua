@@ -271,7 +271,9 @@ globalkeys = awful.util.table.join(
                   awful.util.getdir("cache") .. "/history_eval")
               end),
 	awful.key({ }, "XF86AudioRaiseVolume",    function () awful.util.spawn("amixer set PCM 2+") end),
-awful.key({ }, "XF86AudioLowerVolume",    function () awful.util.spawn("amixer set PCM 2-") end)
+	awful.key({ }, "XF86AudioLowerVolume",    function () awful.util.spawn("amixer set PCM 2-") end),
+	awful.key({ }, "XF86AudioMute",    function () awful.util.spawn("bash /home/christian/Dell.9400/toggleMute.sh") end)
+
 
 )
 
@@ -434,7 +436,6 @@ do
 	
 	"run-once nautilus",
 	"run-once bluetooth-applet",
-	"run-once blueproximity",
 	"run-once thunderbird",
 	"run-once nm-applet",
 	"run-once virtualbox",
