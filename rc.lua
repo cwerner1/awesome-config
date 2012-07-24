@@ -272,9 +272,9 @@ globalkeys = awful.util.table.join(
               end),
 	awful.key({ }, "XF86AudioRaiseVolume",    function () awful.util.spawn("amixer set PCM 2+") end),
 	awful.key({ }, "XF86AudioLowerVolume",    function () awful.util.spawn("amixer set PCM 2-") end),
-	awful.key({ }, "XF86AudioMute",    function () awful.util.spawn("bash /home/christian/Dell.9400/toggleMute.sh") end)
+	awful.key({ }, "XF86AudioMute",    function () awful.util.spawn("bash /home/christian/Dell.9400/toggleMute.sh") end),
 
-
+	awful.key({ }, "Print", function () awful.util.spawn("scrot -e 'mv $f ~/screenshots/ 2>/dev/null'") end)
 )
 
 clientkeys = awful.util.table.join(
