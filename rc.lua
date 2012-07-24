@@ -81,7 +81,7 @@ layouts =
 tags = {}
 for s = 1, screen.count() do
     -- Each screen has its own tag table.
-    tags[s] = awful.tag({ 1, "_File", "_Prog", "_Web", 5, "_Mus", "_VBox", "_Comm", "_Dl" }, s, layouts[1])
+    tags[s] = awful.tag({ 1, "2_File", "3_Prog", "4_Web", "5_Remote", "6_Mus", "7_VBox", "8_Comm", "9_Down" }, s, layouts[1])
 end
 -- }}}
 
@@ -366,6 +366,8 @@ awful.rules.rules = {
           { rule = { class = "Java" },
         properties = { tag = tags[1][3] }},
 	
+	{ rule = { class = "Teamviewer" },
+	properties = { tag = tags[1][5]}},
 	{ rule = { class = "Thunderbird" },
 	properties = { tag = tags[1][8] }},
 	{ rule = { class = "Skype" },
