@@ -11,7 +11,7 @@ require("naughty")
 require("debian.menu")
 
 -- require("vicious") -- ./vicious
-
+local vicious = require("vicious")
 
 -- {{{ Error handling
 -- Check if awesome encountered an error during startup and fell back to
@@ -106,11 +106,51 @@ mylauncher = awful.widget.launcher({ image = image(beautiful.awesome_icon),
                                      menu = mymainmenu })
 -- }}}
 
+--{{{ CPU usage widget
+cpuwidget = awful.widget.graph()
+cpuwidget:set_width(50)
+cpuwidget:set_height(30)
+cpuwidget:set_background_color("#494B4F")
+cpuwidget:set_color("#FF5656")
+cpuwidget:set_gradient_colors({ "#FF5656", "#88A175", "#AECF96" })
+
+cpuwidget_t = awful.tooltip({ objects = { cpuwidget.widget },})
+--
+-- -- Register CPU widget
+ vicious.register(cpuwidget, vicious.widgets.cpu, 
+                     function (widget, args)
+                                             cpuwidget_t:set_text("CPU Usage: " .. args[1] .. "%")
+                                                                     return args[1]
+                                                                                         end)
+-- }}}
+
+-- RAM usage widget
+memwidget = awful.widget.progressbar()
+memwidget:set_width(15)
+memwidget:set_height(30)
+memwidget:set_vertical(true)
+memwidget:set_background_color('#494B4F')
+memwidget:set_color('#AECF96')
+memwidget:set_gradient_colors({ '#AECF96', '#88A175', '#FF5656' })
+-- RAM usage tooltip
+memwidget_t = awful.tooltip({ objects = { memwidget.widget },})
+
+vicious.cache(vicious.widgets.mem)
+vicious.register(memwidget, vicious.widgets.mem,
+                 function (widget, args)
+                                     memwidget_t:set_text(" RAM: " .. args[2] .. "MB / " .. args[3] .. "MB ")
+                                                         return args[1]
+                                             end, 13)
+ --update every 13 seconds
 
 
 -- {{{ Wibox
 -- Create a textclock widget
 mytextclock = awful.widget.textclock({ align = "right" })
+
+-- Calendar widget to attach to the textclock
+require('calendar2')
+calendar2.addCalendarToWidget(mytextclock)
 
 -- Create a systray
 mysystray = widget({ type = "systray" })
@@ -197,6 +237,10 @@ for s = 1, screen.count() do
         },
         mylayoutbox[s],
         mytextclock,
+
+	memwidget,
+	cpuwidget,
+
 	s == 1 and mysystray or nil,
         mytasklist[s],
         layout = awful.widget.layout.horizontal.rightleft
@@ -270,8 +314,8 @@ globalkeys = awful.util.table.join(
                   awful.util.eval, nil,
                   awful.util.getdir("cache") .. "/history_eval")
               end),
-	awful.key({ }, "XF86AudioRaiseVolume",    function () awful.util.spawn("amixer set PCM 2+") end),
-	awful.key({ }, "XF86AudioLowerVolume",    function () awful.util.spawn("amixer set PCM 2-") end),
+	awful.key({ }, "XF86AudioRaiseVolume",    function () awful.util.spawn("amixer set PCM 3+") end),
+	awful.key({ }, "XF86AudioLowerVolume",    function () awful.util.spawn("amixer set PCM 3-") end),
 	awful.key({ }, "XF86AudioMute",    function () awful.util.spawn("bash /home/christian/Dell.9400/toggleMute.sh") end),
 
 	awful.key({ }, "Print", function () awful.util.spawn("scrot -e 'mv $f ~/screenshots/ 2>/dev/null'") end)
@@ -361,29 +405,30 @@ awful.rules.rules = {
       properties = { floating = true } },
     { rule = { class = "gimp" },
       properties = { floating = true } },
-    { rule = { class = "Nautilus" },
-        properties = { tag = tags[1][2] }},
-          { rule = { class = "Java" },
-        properties = { tag = tags[1][3] }},
+
+        { rule = { class = "Chromium-browser" },
+        properties = { tag = tags[1][4] }},
+
 	
 	{ rule = { class = "Teamviewer" },
 	properties = { tag = tags[1][5]}},
-	{ rule = { class = "Thunderbird" },
-	properties = { tag = tags[1][8] }},
-	{ rule = { class = "Skype" },
-        properties = { tag = tags[1][8] }},
-	{ rule = { class = "VirtualBox" },
-        properties = { tag = tags[1][7] }},
-	{ rule = { class = "VirtualBox" },
-        properties = { tag = tags[1][7] }},
 	{ rule = { class = "Amarok" },
         properties = { tag = tags[1][6] }},
- 	{ rule = { class = "Chromium-browser" },
-        properties = { tag = tags[1][4] }},
+	
+
+	{ rule = { class = "VirtualBox" },
+        properties = { tag = tags[1][7] }},
+
+	{ rule = { class = "Thunderbird" },
+	properties = { tag = tags[1][8] }},
+        { rule = { class = "Pidgin" },
+        properties = { tag = tags[1][8] }},
+
+	{ rule = { class = "Skype" },
+        properties = { tag = tags[1][8] }},
 
 
-        { rule = { class = "Transmission-gtk" },
-        properties = { tag = tags[1][9] }},
+
         { rule = { class = "Transmission-gtk" },
         properties = { tag = tags[1][9] }},
         { rule = { class = "Calibre" },
@@ -435,7 +480,7 @@ do
     	"run-once skype",
 	"run-once hamster-indicator",
 	"run-once transmission-gtk",
-	
+	"run-once pidgin",	
 	"run-once nautilus",
 	"run-once bluetooth-applet",
 	"run-once thunderbird",
