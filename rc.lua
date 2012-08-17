@@ -406,8 +406,6 @@ awful.rules.rules = {
     { rule = { class = "gimp" },
       properties = { floating = true } },
 
-        { rule = { class = "Chromium-browser" },
-        properties = { tag = tags[1][4] }},
 
 	
 	{ rule = { class = "Teamviewer" },
@@ -488,7 +486,7 @@ do
 	"run-once virtualbox",
 	"run-once amarok",
 	"run-once chromium-browser",
-	"run-once netbeans",
+	
 	"run-once calibre"
   }
 
