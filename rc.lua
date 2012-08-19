@@ -13,6 +13,8 @@ require("debian.menu")
 -- require("vicious") -- ./vicious
 local vicious = require("vicious")
 
+
+
 -- {{{ Error handling
 -- Check if awesome encountered an error during startup and fell back to
 -- another config (This code will only ever execute for the fallback config)
@@ -206,6 +208,8 @@ spacer.width = 3
                                               if client.focus then client.focus:raise() end
                                           end))
 
+
+
 for s = 1, screen.count() do
     -- Create a promptbox for each screen
     mypromptbox[s] = awful.widget.prompt({ layout = awful.widget.layout.horizontal.leftright })
@@ -240,7 +244,7 @@ for s = 1, screen.count() do
 
 	memwidget,
 	cpuwidget,
-
+	fraxbat,
 	s == 1 and mysystray or nil,
         mytasklist[s],
         layout = awful.widget.layout.horizontal.rightleft
@@ -496,4 +500,4 @@ do
 end
 -- }}} 
 
-
+--awful.hooks.timer.register(10, function () hook_fraxbat(fraxbat,'BAT0') end)
