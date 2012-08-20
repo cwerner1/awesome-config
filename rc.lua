@@ -145,6 +145,91 @@ vicious.register(memwidget, vicious.widgets.mem,
                                              end, 13)
  --update every 13 seconds
 
+batterywidget = widget({type = "textbox", name = "batterywidget", align = "right" ,text="lala"})
+function batteryInfo(adapter)
+     spacer = " "
+     local fcur = io.open("/sys/class/power_supply/"..adapter.."/charge_now")    
+     local fcap = io.open("/sys/class/power_supply/"..adapter.."/charge_full")
+     local fsta = io.open("/sys/class/power_supply/"..adapter.."/status")
+     local cur = fcur:read()
+     local cap = fcap:read()
+     local sta = fsta:read()
+
+     local fstatecontents = io.open('/proc/acpi/battery/BAT0/state')
+     local statecontents = fstatecontents:read('*all')
+    
+     local f = io.open('/proc/acpi/battery/BAT0/info')
+     local infocontents = f:read('*all')
+     f:close()
+ 
+    
+     local status, _
+     -- Find the full capacity (from info)
+     local full_cap
+	full_cap = string.find(infocontents, "last full capacity:%s+(%d+).*")
+
+     local battery = math.floor(cur * 100 / cap)
+     if sta:match("Charging") then
+         dir = "^"
+	 color = "green"
+         battery = "A/C ("..battery..")"
+     elseif sta:match("Discharging") then
+         dir = "v"
+	color="orange"
+         if tonumber(battery) > 25 and tonumber(battery) < 75 then
+             battery = battery
+		color = "orange"
+         elseif tonumber(battery) < 25 then
+             if tonumber(battery) < 10 then
+		color = "red"
+                 naughty.notify({ title      = "Battery Warning"
+                                , text       = "Battery low!"..spacer..battery.."%"..spacer.."left!"
+                                , timeout    = 5
+                                , position   = "top_right"
+                                , fg         = beautiful.fg_focus
+                                , bg         = beautiful.bg_focus
+                                })
+             end
+             battery = battery
+         else
+             battery = battery
+         end
+     else
+         dir = "="
+         battery = "A/C"
+     end
+	
+	 -- Find the current capacity, state and (dis)charge rate (from state)
+	local state, rate, current_cap
+
+	status, _, state = string.find(statecontents, "charging state:%s+(%w+)")
+	status, _, rate  = string.find(statecontents, "present rate:%s+(%d+).*")
+	status, _, current_cap = string.find(statecontents, "remaining capacity:%s+(%d+).*")
+	
+	if state == "charging" then
+ 		prefix = "AC: "
+ 		time = (full_cap - current_cap) / rate
+	elseif state == "discharging" then
+		prefix = "Battery: "
+		time = current_cap / rate
+	end
+	
+	
+	if state == "charged" then
+		time = ""
+	else
+
+	 	time_hour = math.floor(time)
+	     	time_minute = math.floor((time - time_hour) * 60)
+		time = string.format("(%02d:%02d)", time_hour, time_minute)
+	end
+
+     batterywidget.text = spacer.."<span color='"..color.."'>Bat:"..spacer..battery.."% "..time.." "..dir.."</span>"..spacer
+     fcur:close()
+     fcap:close()
+     fsta:close()
+	fstatecontents:close()
+ end
 
 -- {{{ Wibox
 -- Create a textclock widget
@@ -244,7 +329,7 @@ for s = 1, screen.count() do
 
 	memwidget,
 	cpuwidget,
-	fraxbat,
+	batterywidget,
 	s == 1 and mysystray or nil,
         mytasklist[s],
         layout = awful.widget.layout.horizontal.rightleft
@@ -499,5 +584,8 @@ do
   end
 end
 -- }}} 
-
---awful.hooks.timer.register(10, function () hook_fraxbat(fraxbat,'BAT0') end)
+-- run on Start
+  batteryInfo("BAT0")
+awful.hooks.timer.register(20, function()
+     batteryInfo("BAT0")
+end)
