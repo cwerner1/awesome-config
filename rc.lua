@@ -489,7 +489,8 @@ do
 	"run-once amarok",
 	"run-once chromium-browser",
 	"run-once netbeans",
-	"run-once calibre"
+	"run-once calibre",
+	"run-once ubuntuone-launch"
   }
 
   for _,i in pairs(cmds) do
