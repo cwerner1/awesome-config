@@ -314,11 +314,13 @@ globalkeys = awful.util.table.join(
                   awful.util.eval, nil,
                   awful.util.getdir("cache") .. "/history_eval")
               end),
+
 	awful.key({ }, "XF86AudioRaiseVolume",    function () awful.util.spawn("amixer set PCM 3+") end),
 	awful.key({ }, "XF86AudioLowerVolume",    function () awful.util.spawn("amixer set PCM 3-") end),
 	awful.key({ }, "XF86AudioMute",    function () awful.util.spawn("bash /home/christian/Dell.9400/toggleMute.sh") end),
 
-	awful.key({ }, "Print", function () awful.util.spawn("scrot -e 'mv $f ~/screenshots/ 2>/dev/null'") end)
+	awful.key({ }, "Print", function () awful.util.spawn("scrot -e 'mv $f ~/screenshots/ 2>/dev/null'") end),
+	awful.key({ modkey }, "l", function () awful.util.spawn("gnome-screensaver-command -l") end)
 )
 
 clientkeys = awful.util.table.join(
@@ -332,7 +334,7 @@ clientkeys = awful.util.table.join(
     awful.key({ modkey,           }, "n",
         function (c)
             -- The client currently has the input focus, so it cannot be
-            -- minimized, since minimized clients can't have the focus.
+            -- minimized, since minimized clients can't have the focus.t
             c.minimized = true
         end),
     awful.key({ modkey,           }, "m",
