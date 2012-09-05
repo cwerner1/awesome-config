@@ -414,7 +414,7 @@ awful.rules.rules = {
 	
 	{ rule = { class = "Teamviewer" },
 	properties = { tag = tags[1][5]}},
-	{ rule = { class = "Amarok" },
+	{ rule = { class = "Spotify" },
         properties = { tag = tags[1][6] }},
 	
 
@@ -488,7 +488,7 @@ do
 	"run-once thunderbird",
 	"run-once nm-applet",
 	"run-once virtualbox",
-	"run-once amarok",
+	"run-once spotify",
 	"run-once chromium-browser",
 	"run-once netbeans",
 	"run-once calibre",
