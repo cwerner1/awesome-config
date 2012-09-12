@@ -408,8 +408,8 @@ awful.rules.rules = {
     { rule = { class = "gimp" },
       properties = { floating = true } },
 
-        { rule = { class = "Chromium-browser" },
-        properties = { tag = tags[1][4] }},
+---        { rule = { class = "Chromium-browser" },
+---        properties = { tag = tags[1][4] }},
 
 	
 	{ rule = { class = "Teamviewer" },
