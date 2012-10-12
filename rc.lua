@@ -490,7 +490,6 @@ do
 	"run-once virtualbox",
 	"run-once spotify",
 	"run-once chromium-browser",
-	"run-once netbeans",
 	"run-once calibre",
 	"run-once ubuntuone-launch"
   }
