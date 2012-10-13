@@ -13,8 +13,6 @@ require("debian.menu")
 -- require("vicious") -- ./vicious
 local vicious = require("vicious")
 
-
-
 -- {{{ Error handling
 -- Check if awesome encountered an error during startup and fell back to
 -- another config (This code will only ever execute for the fallback config)
@@ -208,8 +206,6 @@ spacer.width = 3
                                               if client.focus then client.focus:raise() end
                                           end))
 
-
-
 for s = 1, screen.count() do
     -- Create a promptbox for each screen
     mypromptbox[s] = awful.widget.prompt({ layout = awful.widget.layout.horizontal.leftright })
@@ -244,7 +240,7 @@ for s = 1, screen.count() do
 
 	memwidget,
 	cpuwidget,
-	fraxbat,
+
 	s == 1 and mysystray or nil,
         mytasklist[s],
         layout = awful.widget.layout.horizontal.rightleft
@@ -318,11 +314,13 @@ globalkeys = awful.util.table.join(
                   awful.util.eval, nil,
                   awful.util.getdir("cache") .. "/history_eval")
               end),
+
 	awful.key({ }, "XF86AudioRaiseVolume",    function () awful.util.spawn("amixer set PCM 3+") end),
 	awful.key({ }, "XF86AudioLowerVolume",    function () awful.util.spawn("amixer set PCM 3-") end),
 	awful.key({ }, "XF86AudioMute",    function () awful.util.spawn("bash /home/christian/Dell.9400/toggleMute.sh") end),
 
-	awful.key({ }, "Print", function () awful.util.spawn("scrot -e 'mv $f ~/screenshots/ 2>/dev/null'") end)
+	awful.key({ }, "Print", function () awful.util.spawn("scrot -e 'mv $f ~/screenshots/ 2>/dev/null'") end),
+	awful.key({ modkey }, "l", function () awful.util.spawn("gnome-screensaver-command -l") end)
 )
 
 clientkeys = awful.util.table.join(
@@ -336,7 +334,7 @@ clientkeys = awful.util.table.join(
     awful.key({ modkey,           }, "n",
         function (c)
             -- The client currently has the input focus, so it cannot be
-            -- minimized, since minimized clients can't have the focus.
+            -- minimized, since minimized clients can't have the focus.t
             c.minimized = true
         end),
     awful.key({ modkey,           }, "m",
@@ -410,11 +408,13 @@ awful.rules.rules = {
     { rule = { class = "gimp" },
       properties = { floating = true } },
 
+---        { rule = { class = "Chromium-browser" },
+---        properties = { tag = tags[1][4] }},
 
 	
 	{ rule = { class = "Teamviewer" },
 	properties = { tag = tags[1][5]}},
-	{ rule = { class = "Amarok" },
+	{ rule = { class = "Spotify" },
         properties = { tag = tags[1][6] }},
 	
 
@@ -488,10 +488,10 @@ do
 	"run-once thunderbird",
 	"run-once nm-applet",
 	"run-once virtualbox",
-	"run-once amarok",
+	"run-once spotify",
 	"run-once chromium-browser",
-	
-	"run-once calibre"
+	"run-once calibre",
+	"run-once ubuntuone-launch"
   }
 
   for _,i in pairs(cmds) do
@@ -500,4 +500,4 @@ do
 end
 -- }}} 
 
---awful.hooks.timer.register(10, function () hook_fraxbat(fraxbat,'BAT0') end)
+
