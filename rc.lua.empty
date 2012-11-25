@@ -10,9 +10,6 @@ require("naughty")
 -- Load Debian menu entries
 require("debian.menu")
 
--- require("vicious") -- ./vicious
-local vicious = require("vicious")
-
 -- {{{ Error handling
 -- Check if awesome encountered an error during startup and fell back to
 -- another config (This code will only ever execute for the fallback config)
@@ -33,7 +30,8 @@ do
         naughty.notify({ preset = naughty.config.presets.critical,
                          title = "Oops, an error happened!",
                          text = err })
-        in_error = false
+        in_e
+rror = false
     end)
 end
 -- }}}
@@ -44,7 +42,7 @@ beautiful.init("/usr/share/awesome/themes/default/theme.lua")
 
 -- This is used later as the default terminal and editor to run.
 terminal = "x-terminal-emulator"
-editor = os.getenv("EDITOR") or "vim"
+editor = os.getenv("EDITOR") or "editor"
 editor_cmd = terminal .. " -e " .. editor
 
 -- Default modkey.
@@ -53,10 +51,6 @@ editor_cmd = terminal .. " -e " .. editor
 -- I suggest you to remap Mod4 to another key using xmodmap or other tools.
 -- However, you can use another modifier like Mod1, but it may interact with others.
 modkey = "Mod4"
-
----wallpaper_app = "feh" -- if you want to check for app before trying
---wallpaper_dir = os.getenv("HOME") .. "/Pictures/Wallpaper" -- wallpaper dir
---local wallpaper_cmd = "find " .. wallpaper_dir .. " -type f -name '*.jpg'  -print0 | shuf -n1 -z | xargs -0 feh --bg-scale"
 
 -- Table of layouts to cover with awful.layout.inc, order matters.
 layouts =
@@ -81,11 +75,9 @@ layouts =
 tags = {}
 for s = 1, screen.count() do
     -- Each screen has its own tag table.
-    tags[s] = awful.tag({ 1, "2_File", "3_Prog", "4_Web", "5_Remote", "6_Mus", "7_VBox", "8_Comm", "9_Down" }, s, layouts[1])
+	tags[s] = awful.tag({ 1, "2_File", "3_Prog", "4_Web", "5_Remote", "6_Mus", "7_VBox", "8_Comm", "9_Down" }, s, layouts[1])
 end
 -- }}}
-
-
 
 -- {{{ Menu
 -- Create a laucher widget and a main menu
@@ -106,51 +98,9 @@ mylauncher = awful.widget.launcher({ image = image(beautiful.awesome_icon),
                                      menu = mymainmenu })
 -- }}}
 
---{{{ CPU usage widget
-cpuwidget = awful.widget.graph()
-cpuwidget:set_width(50)
-cpuwidget:set_height(30)
-cpuwidget:set_background_color("#494B4F")
-cpuwidget:set_color("#FF5656")
-cpuwidget:set_gradient_colors({ "#FF5656", "#88A175", "#AECF96" })
-
-cpuwidget_t = awful.tooltip({ objects = { cpuwidget.widget },})
---
--- -- Register CPU widget
- vicious.register(cpuwidget, vicious.widgets.cpu, 
-                     function (widget, args)
-                                             cpuwidget_t:set_text("CPU Usage: " .. args[1] .. "%")
-                                                                     return args[1]
-                                                                                         end)
--- }}}
-
--- RAM usage widget
-memwidget = awful.widget.progressbar()
-memwidget:set_width(15)
-memwidget:set_height(30)
-memwidget:set_vertical(true)
-memwidget:set_background_color('#494B4F')
-memwidget:set_color('#AECF96')
-memwidget:set_gradient_colors({ '#AECF96', '#88A175', '#FF5656' })
--- RAM usage tooltip
-memwidget_t = awful.tooltip({ objects = { memwidget.widget },})
-
-vicious.cache(vicious.widgets.mem)
-vicious.register(memwidget, vicious.widgets.mem,
-                 function (widget, args)
-                                     memwidget_t:set_text(" RAM: " .. args[2] .. "MB / " .. args[3] .. "MB ")
-                                                         return args[1]
-                                             end, 13)
- --update every 13 seconds
-
-
 -- {{{ Wibox
 -- Create a textclock widget
 mytextclock = awful.widget.textclock({ align = "right" })
-
--- Calendar widget to attach to the textclock
-require('calendar2')
-calendar2.addCalendarToWidget(mytextclock)
 
 -- Create a systray
 mysystray = widget({ type = "systray" })
@@ -169,7 +119,8 @@ mytaglist.buttons = awful.util.table.join(
                     awful.button({ }, 5, awful.tag.viewprev)
                     )
 mytasklist = {}
-mytasklist.buttons = awful.util.table.join(
+mytaskli
+st.buttons = awful.util.table.join(
                      awful.button({ }, 1, function (c)
                                               if c == client.focus then
                                                   c.minimized = true
@@ -180,13 +131,7 @@ mytasklist.buttons = awful.util.table.join(
                                                   -- This will also un-minimize
                                                   -- the client, if needed
                                                   client.focus = c
-                        -- {{{ Reusable separator
-separator = widget({ type = "imagebox" })
-separator.image = image(beautiful.widget_sep)
-
-spacer = widget({ type = "textbox" })
-spacer.width = 3
--- }}}                          c:raise()
+                                                  c:raise()
                                               end
                                           end),
                      awful.button({ }, 3, function ()
@@ -237,11 +182,7 @@ for s = 1, screen.count() do
         },
         mylayoutbox[s],
         mytextclock,
-
-	memwidget,
-	cpuwidget,
-
-	s == 1 and mysystray or nil,
+        s == 1 and mysystray or nil,
         mytasklist[s],
         layout = awful.widget.layout.horizontal.rightleft
     }
@@ -313,14 +254,7 @@ globalkeys = awful.util.table.join(
                   mypromptbox[mouse.screen].widget,
                   awful.util.eval, nil,
                   awful.util.getdir("cache") .. "/history_eval")
-              end),
-
-	awful.key({ }, "XF86AudioRaiseVolume",    function () awful.util.spawn("amixer set PCM 3+") end),
-	awful.key({ }, "XF86AudioLowerVolume",    function () awful.util.spawn("amixer set PCM 3-") end),
-	awful.key({ }, "XF86AudioMute",    function () awful.util.spawn("bash /home/christian/Dell.9400/toggleMute.sh") end),
-
-	awful.key({ }, "Print", function () awful.util.spawn("scrot -e 'mv $f /home/christian/screenshots/ 2>/dev/null'") end),
-	awful.key({ modkey }, "l", function () awful.util.spawn("gnome-screensaver-command -l") end)
+              end)
 )
 
 clientkeys = awful.util.table.join(
@@ -334,7 +268,7 @@ clientkeys = awful.util.table.join(
     awful.key({ modkey,           }, "n",
         function (c)
             -- The client currently has the input focus, so it cannot be
-            -- minimized, since minimized clients can't have the focus.t
+            -- minimized, since minimized clients can't have the focus.
             c.minimized = true
         end),
     awful.key({ modkey,           }, "m",
@@ -407,36 +341,7 @@ awful.rules.rules = {
       properties = { floating = true } },
     { rule = { class = "gimp" },
       properties = { floating = true } },
-
----        { rule = { class = "Chromium-browser" },
----        properties = { tag = tags[1][4] }},
-
-	
-	{ rule = { class = "Teamviewer" },
-	properties = { tag = tags[1][5]}},
-	{ rule = { class = "Spotify" },
-        properties = { tag = tags[1][6] }},
-	
-
-	{ rule = { class = "VirtualBox" },
-        properties = { tag = tags[1][7] }},
-
-	{ rule = { class = "Thunderbird" },
-	properties = { tag = tags[1][8] }},
-        { rule = { class = "Pidgin" },
-        properties = { tag = tags[1][8] }},
-
-	{ rule = { class = "Skype" },
-        properties = { tag = tags[1][8] }},
-
-
-
-        { rule = { class = "Transmission-gtk" },
-        properties = { tag = tags[1][9] }},
-        { rule = { class = "Calibre" },
-        properties = { tag = tags[1][9] }},
-
-   -- Set Firefox to always map on tags number 2 of screen 1.
+    -- Set Firefox to always map on tags number 2 of screen 1.
     -- { rule = { class = "Firefox" },
     --   properties = { tag = tags[1][2] } },
 }
@@ -472,20 +377,3 @@ end)
 client.add_signal("focus", function(c) c.border_color = beautiful.border_focus end)
 client.add_signal("unfocus", function(c) c.border_color = beautiful.border_normal end)
 -- }}}
-
-
--- {{{ Autostart
--- autostart
-do
-  local cmds = 
-  {
-	"/home/christian/.config/awesome/autostart.sh" 
-  }
-
-  for _,i in pairs(cmds) do
-    awful.util.spawn(i)
-  end
-end
--- }}} 
-
-
